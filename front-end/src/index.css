@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Frutiger';
+  src: url('./assets/fonts/Frutiger.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Frutiger';
+  src: url('./assets/fonts/Frutiger-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
