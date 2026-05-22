@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
-from tools import TOOLS, TOOL_DECLARATIONS
-from logger import init_db, create_run, add_step, finish_run
+from src.tools import TOOLS, TOOL_DECLARATIONS
+from src.logger import init_db, create_run, add_step, finish_run
 
 
 init_db()
