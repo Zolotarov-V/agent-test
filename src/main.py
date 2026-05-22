@@ -4,11 +4,11 @@ import subprocess
 import asyncio
 import inspect
 from typing import Dict
-from tools import TOOLS, TOOL_DECLARATIONS
+from src.tools import TOOLS, TOOL_DECLARATIONS
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
-from logger import init_db, create_run, add_step, finish_run
+from src.logger import init_db, create_run, add_step, finish_run
 
 init_db()
 
@@ -258,18 +258,19 @@ def run_agent(prompt):
 
 
 
-answer = run_agent("""
 
-Find current AI trends.
+if __name__ == "__main__":
+    answer = run_agent("""
 
-Calculate 25*84.
+    Find current AI trends.
 
-Summarize findings.
+    Calculate 25*84.
 
-""")
+    Summarize findings.
 
-print(
-    "\nFINAL:"
-)
+    """)
+    print(
+        "\nFINAL:"
+    )
 
-print(answer)
+    print(answer)
