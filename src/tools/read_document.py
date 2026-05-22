@@ -1,11 +1,11 @@
 from pathlib import Path
 
 import pandas as pd
-from docx import Document
-import fitz  # PyMuPDF
+from docx import Document  # PyMuPDF
 
 
 def read_pdf(path: str) -> str:
+    import fitz
     doc = fitz.open(path)
     return "\n".join(page.get_text() for page in doc)
 
