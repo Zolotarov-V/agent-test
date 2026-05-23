@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://literal-agentic-studio.onrender.com/api/:path*"
+      "destination": "https://agent-test-idwz.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",

@@ -1,6 +1,6 @@
 import { formatApiError } from "./errors"
 
-const DEFAULT_API_HOST = "https://literal-agentic-studio.onrender.com"
+const DEFAULT_API_HOST = "https://agent-test-idwz.onrender.com"
 
 export async function parseJsonResponse(res) {
   const contentType = res.headers.get("content-type") || ""

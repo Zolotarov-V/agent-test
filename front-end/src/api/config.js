@@ -1,5 +1,5 @@
 const PRODUCTION_API_HOST =
-  "https://literal-agentic-studio.onrender.com"
+  "https://agent-test-idwz.onrender.com"
 
 /**
  * Normalize API base to exactly one `/api` suffix (never `/api/api`).
