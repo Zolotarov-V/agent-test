@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { getUserInfo, logout, setUserInfo } from "../api/api"
 import { saveApiKeys } from "../api/apiKeys"
+import { API_URL } from "../api/config"
 import { testGitHubConnection } from "../api/github"
+import { createRestKey, fetchRestKeys, revokeRestKey } from "../api/restKeys"
 import { AppNav } from "../components/AppNav"
 import { ProfileMenu } from "../components/ProfileMenu"
 import { useAuth } from "../hooks/useAuth"
@@ -11,6 +13,15 @@ const GITHUB_STATUS_LABEL = {
   connected: "Connected",
   invalid: "Invalid token",
   not_configured: "Not configured",
+}
+
+function formatDate(iso) {
+  if (!iso) return "Never"
+  try {
+    return new Date(iso).toLocaleString()
+  } catch {
+    return iso
+  }
 }
 
 function StatusBadge({ status }) {
@@ -51,6 +62,18 @@ export function ApiKeysSettings() {
   const [loadingMeta, setLoadingMeta] = useState(true)
   const [loadError, setLoadError] = useState("")
 
+  const [restKeys, setRestKeys] = useState([])
+  const [restKeyName, setRestKeyName] = useState("")
+  const [restKeyLoading, setRestKeyLoading] = useState(false)
+  const [restKeyError, setRestKeyError] = useState("")
+  const [newlyCreatedKey, setNewlyCreatedKey] = useState(null)
+  const [copiedKey, setCopiedKey] = useState(false)
+
+  const loadRestKeys = useCallback(async () => {
+    const keys = await fetchRestKeys()
+    setRestKeys(Array.isArray(keys) ? keys : [])
+  }, [])
+
   useEffect(() => {
     let cancelled = false
 
@@ -59,6 +82,7 @@ export function ApiKeysSettings() {
         setLoadingMeta(true)
         setLoadError("")
         await loadApiKeys()
+        await loadRestKeys()
       } catch (err) {
         if (!cancelled) setLoadError(err.message || "Failed to load settings")
       } finally {
@@ -68,7 +92,49 @@ export function ApiKeysSettings() {
 
     load()
     return () => { cancelled = true }
-  }, [loadApiKeys])
+  }, [loadApiKeys, loadRestKeys])
+
+  async function handleCreateRestKey() {
+    const name = restKeyName.trim()
+    if (!name) return
+    setRestKeyLoading(true)
+    setRestKeyError("")
+    setNewlyCreatedKey(null)
+    setCopiedKey(false)
+    try {
+      const created = await createRestKey(name)
+      setNewlyCreatedKey(created)
+      setRestKeyName("")
+      await loadRestKeys()
+    } catch (err) {
+      setRestKeyError(err.message || "Failed to create API key")
+    } finally {
+      setRestKeyLoading(false)
+    }
+  }
+
+  async function handleRevokeRestKey(id, name) {
+    if (!window.confirm(`Revoke API key "${name}"? This cannot be undone.`)) return
+    setRestKeyError("")
+    try {
+      await revokeRestKey(id)
+      if (newlyCreatedKey?.id === id) setNewlyCreatedKey(null)
+      await loadRestKeys()
+    } catch (err) {
+      setRestKeyError(err.message || "Failed to revoke API key")
+    }
+  }
+
+  async function handleCopyNewKey() {
+    if (!newlyCreatedKey?.key) return
+    try {
+      await navigator.clipboard.writeText(newlyCreatedKey.key)
+      setCopiedKey(true)
+      setTimeout(() => setCopiedKey(false), 2000)
+    } catch {
+      setRestKeyError("Could not copy to clipboard")
+    }
+  }
 
   function handleSaveUser() {
     setUserInfo({ username, email })
@@ -337,6 +403,97 @@ export function ApiKeysSettings() {
 
           <hr style={styles.divider} />
 
+          <section aria-labelledby="rest-api-keys-heading">
+            <h2 id="rest-api-keys-heading" style={styles.sectionTitle}>REST API Access</h2>
+            <p style={styles.hint}>
+              Create keys to call the API from scripts or integrations. Use the header{" "}
+              <code style={styles.inlineCode}>Authorization: Api-Key &lt;your-key&gt;</code> on any
+              authenticated endpoint (e.g. list agents, start runs).
+            </p>
+            <p style={styles.hint}>
+              Base URL: <code style={styles.inlineCode}>{API_URL}</code>
+            </p>
+
+            {restKeys.length > 0 && (
+              <ul style={styles.keyList}>
+                {restKeys.map((item) => (
+                  <li key={item.id} style={styles.keyListItem}>
+                    <div style={styles.keyListMain}>
+                      <span style={styles.keyListName}>{item.name}</span>
+                      <span style={styles.keyListPrefix}>{item.prefix}…</span>
+                    </div>
+                    <div style={styles.keyListMeta}>
+                      <span>Created {formatDate(item.created_at)}</span>
+                      <span>Last used {formatDate(item.last_used_at)}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleRevokeRestKey(item.id, item.name)}
+                      style={styles.revokeBtn}
+                    >
+                      Revoke
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {restKeys.length === 0 && (
+              <p style={styles.hint}>No active API keys yet.</p>
+            )}
+
+            <div style={styles.section}>
+              <label style={styles.label} htmlFor="rest-key-name">Key name</label>
+              <input
+                id="rest-key-name"
+                type="text"
+                value={restKeyName}
+                onChange={(e) => setRestKeyName(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleCreateRestKey()}
+                placeholder="e.g. CI pipeline, local script"
+                style={styles.input}
+                disabled={restKeyLoading}
+                maxLength={100}
+                autoComplete="off"
+              />
+            </div>
+
+            {restKeyError && <div style={styles.errorMsg} role="alert">{restKeyError}</div>}
+
+            {newlyCreatedKey?.key && (
+              <div style={styles.newKeyBox} role="status">
+                <p style={styles.newKeyTitle}>Copy your new API key now — it will not be shown again.</p>
+                <div style={styles.inputRow}>
+                  <input
+                    type="text"
+                    readOnly
+                    value={newlyCreatedKey.key}
+                    style={styles.input}
+                    aria-label="New API key"
+                  />
+                  <button type="button" onClick={handleCopyNewKey} style={styles.toggleBtn}>
+                    {copiedKey ? "Copied ✓" : "Copy"}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={handleCreateRestKey}
+              disabled={!restKeyName.trim() || restKeyLoading}
+              style={{
+                ...styles.saveBtn,
+                opacity: !restKeyName.trim() || restKeyLoading ? 0.5 : 1,
+                cursor: !restKeyName.trim() || restKeyLoading ? "not-allowed" : "pointer",
+              }}
+            >
+              {restKeyLoading ? "Creating…" : "Create API key"}
+            </button>
+          </section>
+
+          <hr style={styles.divider} />
+
           <button type="button" onClick={handleLogout} style={styles.logoutBtn}>
             Log out
           </button>
@@ -448,6 +605,49 @@ const styles = {
     fontWeight: 600,
   },
   hint: { fontSize: 11, color: "rgba(255,255,255,0.7)", marginTop: 6, lineHeight: 1.5 },
+  inlineCode: {
+    fontFamily: "ui-monospace, monospace",
+    fontSize: 10,
+    background: "rgba(0,0,0,0.25)",
+    padding: "2px 6px",
+    borderRadius: 4,
+  },
+  keyList: { listStyle: "none", margin: "0 0 16px", padding: 0, display: "flex", flexDirection: "column", gap: 10 },
+  keyListItem: {
+    background: "rgba(0,0,0,0.15)",
+    border: "1px solid rgba(255,255,255,0.12)",
+    borderRadius: 10,
+    padding: "12px 14px",
+  },
+  keyListMain: { display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, marginBottom: 6 },
+  keyListName: { fontWeight: 700, fontSize: 14 },
+  keyListPrefix: { fontFamily: "ui-monospace, monospace", fontSize: 12, opacity: 0.85 },
+  keyListMeta: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 2,
+    fontSize: 10,
+    color: "rgba(255,255,255,0.65)",
+    marginBottom: 10,
+  },
+  revokeBtn: {
+    padding: "6px 12px",
+    borderRadius: 8,
+    border: "1px solid rgba(255,120,120,0.45)",
+    background: "transparent",
+    color: "#ffb4b4",
+    cursor: "pointer",
+    fontSize: 12,
+    fontWeight: 600,
+  },
+  newKeyBox: {
+    background: "rgba(100,220,150,0.15)",
+    border: "1px solid rgba(100,220,150,0.35)",
+    borderRadius: 10,
+    padding: "12px 14px",
+    marginBottom: 12,
+  },
+  newKeyTitle: { fontSize: 12, color: "#6ee7b7", margin: "0 0 10px", fontWeight: 600 },
   link: { color: "#b3f0ff" },
   errorMsg: {
     background: "rgba(255,100,100,0.2)",
