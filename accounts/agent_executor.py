@@ -98,6 +98,11 @@ def _get_user_gemini_key(owner) -> str:
     return record.get_gemini_key() if record else ""
 
 
+def _get_user_serper_key(owner) -> str:
+    record = _get_user_api_record(owner)
+    return record.get_serper_key() if record else ""
+
+
 def _get_user_github_token(owner) -> str:
     record = _get_user_api_record(owner)
     if not record or not record.github_configured:
@@ -149,6 +154,7 @@ def execute_agent_run(run_id: int):
     system_prompt = agent.build_system_prompt()
     prompt = run.message
     api_key = _get_user_gemini_key(owner)
+    serper_key = _get_user_serper_key(owner)
     github_token = _get_user_github_token(owner)
     approval_allowlist = _get_approval_allowlist(owner)
     gemini_model = getattr(settings, "GEMINI_MODEL", "gemini-2.0-flash")
@@ -169,8 +175,9 @@ def execute_agent_run(run_id: int):
         max_iter = max(1, min(20, agent.max_iterations or 10))
 
         from github_tools import github_token_context
+        from tools.web_search import serper_api_key_context
 
-        with github_token_context(github_token):
+        with github_token_context(github_token), serper_api_key_context(serper_key):
             result = run_agent(
                 prompt,
                 system_prompt=system_prompt,

@@ -52,6 +52,12 @@ export function ApiKeysSettings() {
   const [keySuccess, setKeySuccess] = useState("")
   const [keyError, setKeyError] = useState("")
 
+  const [serperKey, setSerperKey] = useState("")
+  const [showSerperKey, setShowSerperKey] = useState(false)
+  const [serperLoading, setSerperLoading] = useState(false)
+  const [serperSuccess, setSerperSuccess] = useState("")
+  const [serperError, setSerperError] = useState("")
+
   const [githubToken, setGithubToken] = useState("")
   const [showGithubToken, setShowGithubToken] = useState(false)
   const [githubLoading, setGithubLoading] = useState(false)
@@ -155,6 +161,23 @@ export function ApiKeysSettings() {
       setKeyError(err.message || "Failed to save key")
     } finally {
       setKeyLoading(false)
+    }
+  }
+
+  async function handleSaveSerperKey() {
+    const value = serperKey.trim()
+    setSerperLoading(true)
+    setSerperError("")
+    setSerperSuccess("")
+    try {
+      await saveApiKeys({ serper_api_key: value })
+      setSerperKey("")
+      setSerperSuccess(value ? "Serper API key saved!" : "Serper API key removed.")
+      await loadApiKeys()
+    } catch (err) {
+      setSerperError(err.message || "Failed to save Serper key")
+    } finally {
+      setSerperLoading(false)
     }
   }
 
@@ -334,6 +357,67 @@ export function ApiKeysSettings() {
               }}
             >
               {keyLoading ? "Saving…" : "Save API key"}
+            </button>
+          </section>
+
+          <hr style={styles.divider} />
+
+          <section aria-labelledby="serper-heading">
+            <h2 id="serper-heading" style={styles.sectionTitle}>Serper (Web Search)</h2>
+
+            <div style={styles.section}>
+              <label style={styles.label} htmlFor="serper-key">
+                Serper API Key
+                {apiKeys.serper_configured && (
+                  <span style={styles.badgeConfigured}>
+                    Configured {apiKeys.serper_key_hint ? `(${apiKeys.serper_key_hint})` : ""}
+                  </span>
+                )}
+              </label>
+              <div style={styles.inputRow}>
+                <input
+                  id="serper-key"
+                  type={showSerperKey ? "text" : "password"}
+                  value={serperKey}
+                  onChange={(e) => setSerperKey(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSaveSerperKey()}
+                  placeholder={apiKeys.serper_configured ? "Enter new key to replace…" : "Paste Serper API key"}
+                  style={styles.input}
+                  disabled={serperLoading}
+                  autoComplete="off"
+                />
+                <button
+                  type="button"
+                  style={styles.toggleBtn}
+                  onClick={() => setShowSerperKey((v) => !v)}
+                  aria-label={showSerperKey ? "Hide Serper key" : "Show Serper key"}
+                >
+                  {showSerperKey ? "Hide" : "Show"}
+                </button>
+              </div>
+              <p style={styles.hint}>
+                Required for the <strong>web_search</strong> tool. Get a key at{" "}
+                <a href="https://serper.dev" target="_blank" rel="noreferrer" style={styles.link}>
+                  serper.dev
+                </a>
+                . Leave empty and save to remove.
+              </p>
+            </div>
+
+            {serperError && <div style={styles.errorMsg} role="alert">{serperError}</div>}
+            {serperSuccess && <div style={styles.successMsg} role="status">{serperSuccess}</div>}
+
+            <button
+              type="button"
+              onClick={handleSaveSerperKey}
+              disabled={serperLoading}
+              style={{
+                ...styles.saveBtn,
+                opacity: serperLoading ? 0.5 : 1,
+                cursor: serperLoading ? "not-allowed" : "pointer",
+              }}
+            >
+              {serperLoading ? "Saving…" : "Save Serper key"}
             </button>
           </section>
 

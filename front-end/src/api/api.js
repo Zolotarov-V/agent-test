@@ -37,6 +37,8 @@ export function defaultApiKeysMeta() {
   return {
     gemini_configured: false,
     gemini_key_hint: "",
+    serper_configured: false,
+    serper_key_hint: "",
     github_configured: false,
     github_status: "not_configured",
     github_key_hint: "",

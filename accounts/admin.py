@@ -24,8 +24,12 @@ class RestAPIKeyAdmin(admin.ModelAdmin):
 
 @admin.register(UserAPIKey)
 class UserAPIKeyAdmin(admin.ModelAdmin):
-    list_display = ("user", "gemini_configured", "updated_at")
+    list_display = ("user", "gemini_configured", "serper_configured", "updated_at")
 
     @admin.display(boolean=True)
     def gemini_configured(self, obj):
         return obj.gemini_configured
+
+    @admin.display(boolean=True)
+    def serper_configured(self, obj):
+        return obj.serper_configured

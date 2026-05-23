@@ -23,6 +23,12 @@ class UserAPIKeySerializer(serializers.Serializer):
         write_only=True,
         trim_whitespace=True,
     )
+    serper_api_key = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        write_only=True,
+        trim_whitespace=True,
+    )
     github_token = serializers.CharField(
         required=False,
         allow_blank=True,
@@ -31,6 +37,8 @@ class UserAPIKeySerializer(serializers.Serializer):
     )
     gemini_configured = serializers.BooleanField(read_only=True)
     gemini_key_hint = serializers.CharField(read_only=True)
+    serper_configured = serializers.BooleanField(read_only=True)
+    serper_key_hint = serializers.CharField(read_only=True)
     github_configured = serializers.BooleanField(read_only=True)
     github_status = serializers.CharField(read_only=True)
     github_key_hint = serializers.CharField(read_only=True)

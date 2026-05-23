@@ -12,6 +12,7 @@ class UserAPIKey(models.Model):
         related_name="api_keys",
     )
     gemini_api_key_encrypted = models.TextField(blank=True, default="")
+    serper_api_key_encrypted = models.TextField(blank=True, default="")
     github_token_encrypted = models.TextField(blank=True, default="")
     github_token_valid = models.BooleanField(null=True, blank=True)
     approval_allowlist = models.JSONField(default=list, blank=True)
@@ -39,6 +40,25 @@ class UserAPIKey(models.Model):
     @property
     def gemini_configured(self) -> bool:
         return bool(self.gemini_api_key_encrypted)
+
+    def set_serper_key(self, raw_key: str | None) -> None:
+        key = (raw_key or "").strip()
+        self.serper_api_key_encrypted = encrypt_value(key) if key else ""
+
+    def get_serper_key(self) -> str:
+        if not self.serper_api_key_encrypted:
+            return ""
+        return decrypt_value(self.serper_api_key_encrypted)
+
+    def serper_key_hint(self) -> str:
+        key = self.get_serper_key()
+        if len(key) <= 8:
+            return "••••••••" if key else ""
+        return f"{key[:4]}…{key[-4:]}"
+
+    @property
+    def serper_configured(self) -> bool:
+        return bool(self.serper_api_key_encrypted)
 
     def set_github_token(self, raw_token: str | None) -> None:
         token = (raw_token or "").strip()

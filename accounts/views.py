@@ -83,6 +83,10 @@ def api_keys(request):
         record.set_gemini_key(serializer.validated_data["gemini_api_key"])
         update_fields.append("gemini_api_key_encrypted")
 
+    if "serper_api_key" in serializer.validated_data:
+        record.set_serper_key(serializer.validated_data["serper_api_key"])
+        update_fields.append("serper_api_key_encrypted")
+
     if "github_token" in serializer.validated_data:
         token = serializer.validated_data["github_token"]
         if token:

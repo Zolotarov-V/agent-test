@@ -18,6 +18,8 @@ def get_api_keys_payload(user) -> dict:
         return {
             "gemini_configured": False,
             "gemini_key_hint": "",
+            "serper_configured": False,
+            "serper_key_hint": "",
             "github_configured": False,
             "github_status": "not_configured",
             "github_key_hint": "",
@@ -26,6 +28,8 @@ def get_api_keys_payload(user) -> dict:
     return {
         "gemini_configured": record.gemini_configured,
         "gemini_key_hint": record.gemini_key_hint(),
+        "serper_configured": record.serper_configured,
+        "serper_key_hint": record.serper_key_hint(),
         "github_configured": record.github_configured,
         "github_status": record.github_status(),
         "github_key_hint": record.github_key_hint(),
