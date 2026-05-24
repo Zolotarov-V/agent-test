@@ -26,9 +26,9 @@ function formatDate(iso) {
 
 function StatusBadge({ status }) {
   const colors = {
-    connected: "#6ee7b7",
-    invalid: "#fca5a5",
-    not_configured: "rgba(255,255,255,0.55)",
+    connected: "var(--brand-primary)",
+    invalid: "#ff6b6b",
+    not_configured: "var(--text-tertiary)",
   }
   return (
     <span style={{ fontSize: 11, color: colors[status] || colors.not_configured, fontWeight: 600 }}>
@@ -229,7 +229,8 @@ export function ApiKeysSettings() {
       <div style={styles.root}>
         <div style={styles.topBar}>
           <div style={styles.logoBadge}>
-            Agentic<span style={{ color: "#b3f0ff" }}>Studio</span>
+            <span style={styles.logoText}>Agentic</span>
+            <span style={styles.logoAccent}>Studio</span>
           </div>
           <AppNav />
         </div>
@@ -245,9 +246,10 @@ export function ApiKeysSettings() {
     <div style={styles.root}>
       <div style={styles.topBar}>
         <div style={styles.logoBadge}>
-          Agentic<span style={{ color: "#b3f0ff" }}>Studio</span>
+          <span style={styles.logoText}>Agentic</span>
+          <span style={styles.logoAccent}>Studio</span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <AppNav />
           <ProfileMenu />
         </div>
@@ -292,7 +294,7 @@ export function ApiKeysSettings() {
               disabled={!username.trim()}
               style={{
                 ...styles.saveBtn,
-                opacity: username.trim() ? 1 : 0.5,
+                opacity: username.trim() ? 1 : 0.4,
                 cursor: username.trim() ? "pointer" : "not-allowed",
               }}
             >
@@ -352,7 +354,7 @@ export function ApiKeysSettings() {
               disabled={!geminiKey.trim() || keyLoading}
               style={{
                 ...styles.saveBtn,
-                opacity: !geminiKey.trim() || keyLoading ? 0.5 : 1,
+                opacity: !geminiKey.trim() || keyLoading ? 0.4 : 1,
                 cursor: !geminiKey.trim() || keyLoading ? "not-allowed" : "pointer",
               }}
             >
@@ -413,7 +415,7 @@ export function ApiKeysSettings() {
               disabled={serperLoading}
               style={{
                 ...styles.saveBtn,
-                opacity: serperLoading ? 0.5 : 1,
+                opacity: serperLoading ? 0.4 : 1,
                 cursor: serperLoading ? "not-allowed" : "pointer",
               }}
             >
@@ -568,7 +570,7 @@ export function ApiKeysSettings() {
               disabled={!restKeyName.trim() || restKeyLoading}
               style={{
                 ...styles.saveBtn,
-                opacity: !restKeyName.trim() || restKeyLoading ? 0.5 : 1,
+                opacity: !restKeyName.trim() || restKeyLoading ? 0.4 : 1,
                 cursor: !restKeyName.trim() || restKeyLoading ? "not-allowed" : "pointer",
               }}
             >
@@ -592,31 +594,39 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     minHeight: "100vh",
-    background: "linear-gradient(160deg, #5ececa 0%, #3a9fbf 40%, #1a6080 100%)",
-    color: "#fff",
+    background: "var(--surface-base)",
+    color: "var(--text-primary)",
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-    padding: 12,
-    gap: 10,
+    padding: 16,
+    gap: 12,
     boxSizing: "border-box",
   },
   topBar: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: "6px 8px",
+    padding: "8px 12px",
     flexShrink: 0,
     flexWrap: "wrap",
-    gap: 8,
+    gap: 12,
   },
   logoBadge: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
     fontWeight: 700,
-    fontSize: 15,
-    color: "#fff",
-    background: "rgba(255,255,255,0.15)",
-    backdropFilter: "blur(8px)",
-    border: "1px solid rgba(255,255,255,0.2)",
-    borderRadius: 12,
-    padding: "7px 16px",
+    fontSize: 16,
+    background: "var(--surface-raised)",
+    border: "1px solid var(--border-default)",
+    borderRadius: "var(--radius-md)",
+    padding: "10px 20px",
+    boxShadow: "var(--shadow-raised)",
+  },
+  logoText: {
+    color: "var(--text-primary)",
+  },
+  logoAccent: {
+    color: "var(--brand-primary)",
   },
   loadingWrap: {
     flex: 1,
@@ -624,166 +634,217 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    gap: 12,
+    gap: 16,
     fontSize: 14,
-    opacity: 0.85,
+    color: "var(--text-secondary)",
   },
   spinner: {
-    width: 32,
-    height: 32,
-    border: "3px solid rgba(255,255,255,0.2)",
-    borderTopColor: "#fff",
+    width: 36,
+    height: 36,
+    border: "3px solid var(--border-default)",
+    borderTopColor: "var(--brand-primary)",
     borderRadius: "50%",
     animation: "settings-spin 0.8s linear infinite",
   },
   scroll: { flex: 1, overflowY: "auto", padding: "0 4px 16px" },
   card: {
-    background: "rgba(255,255,255,0.08)",
-    backdropFilter: "blur(12px)",
-    borderRadius: 16,
-    border: "2px solid rgba(80,180,255,0.6)",
-    boxShadow: "0 0 30px rgba(80,180,255,0.15), inset 0 1px 0 rgba(255,255,255,0.1)",
-    padding: 24,
-    maxWidth: 560,
+    background: "var(--surface-raised)",
+    borderRadius: "var(--radius-lg)",
+    border: "1px solid var(--border-default)",
+    boxShadow: "var(--shadow-raised), var(--shadow-glow)",
+    padding: 28,
+    maxWidth: 580,
     margin: "0 auto",
     width: "100%",
     boxSizing: "border-box",
   },
-  sectionTitle: { fontSize: 18, fontWeight: 700, margin: "0 0 12px" },
-  section: { marginBottom: 16 },
+  sectionTitle: { 
+    fontSize: 18, 
+    fontWeight: 700, 
+    margin: "0 0 16px",
+    color: "var(--text-primary)",
+    letterSpacing: "-0.3px",
+  },
+  section: { marginBottom: 18 },
   label: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     flexWrap: "wrap",
-    gap: 6,
+    gap: 8,
     fontSize: 11,
     fontWeight: 700,
     textTransform: "uppercase",
-    letterSpacing: "0.6px",
-    marginBottom: 8,
+    letterSpacing: "0.5px",
+    marginBottom: 10,
+    color: "var(--text-secondary)",
   },
-  badgeConfigured: { fontSize: 11, color: "#6ee7b7", fontWeight: 600, textTransform: "none" },
-  inputRow: { display: "flex", gap: 8, alignItems: "stretch" },
+  badgeConfigured: { 
+    fontSize: 11, 
+    color: "var(--brand-primary)", 
+    fontWeight: 600, 
+    textTransform: "none" 
+  },
+  inputRow: { display: "flex", gap: 10, alignItems: "stretch" },
   input: {
     flex: 1,
     minWidth: 0,
-    background: "rgba(0,0,0,0.2)",
-    border: "1px solid rgba(255,255,255,0.15)",
-    borderRadius: 10,
-    padding: "10px 14px",
-    color: "#fff",
+    background: "var(--surface-sunken)",
+    border: "1px solid var(--border-subtle)",
+    borderRadius: "var(--radius-sm)",
+    padding: "12px 16px",
+    color: "var(--text-primary)",
     fontSize: 14,
     outline: "none",
     boxSizing: "border-box",
+    boxShadow: "var(--shadow-pressed)",
+    transition: "var(--transition-fast)",
   },
   toggleBtn: {
     flexShrink: 0,
-    padding: "0 12px",
-    borderRadius: 10,
-    border: "1px solid rgba(255,255,255,0.2)",
-    background: "rgba(255,255,255,0.1)",
-    color: "#fff",
+    padding: "0 16px",
+    borderRadius: "var(--radius-sm)",
+    border: "1px solid var(--border-default)",
+    background: "var(--surface-raised)",
+    color: "var(--text-secondary)",
     cursor: "pointer",
     fontSize: 12,
     fontWeight: 600,
+    transition: "var(--transition-fast)",
   },
-  hint: { fontSize: 11, color: "rgba(255,255,255,0.7)", marginTop: 6, lineHeight: 1.5 },
+  hint: { 
+    fontSize: 11, 
+    color: "var(--text-tertiary)", 
+    marginTop: 8, 
+    lineHeight: 1.5 
+  },
   inlineCode: {
     fontFamily: "ui-monospace, monospace",
     fontSize: 10,
-    background: "rgba(0,0,0,0.25)",
-    padding: "2px 6px",
+    background: "var(--surface-sunken)",
+    padding: "3px 8px",
     borderRadius: 4,
   },
-  keyList: { listStyle: "none", margin: "0 0 16px", padding: 0, display: "flex", flexDirection: "column", gap: 10 },
-  keyListItem: {
-    background: "rgba(0,0,0,0.15)",
-    border: "1px solid rgba(255,255,255,0.12)",
-    borderRadius: 10,
-    padding: "12px 14px",
+  keyList: { 
+    listStyle: "none", 
+    margin: "0 0 18px", 
+    padding: 0, 
+    display: "flex", 
+    flexDirection: "column", 
+    gap: 12 
   },
-  keyListMain: { display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, marginBottom: 6 },
+  keyListItem: {
+    background: "var(--surface-sunken)",
+    border: "1px solid var(--border-subtle)",
+    borderRadius: "var(--radius-sm)",
+    padding: "14px 16px",
+    boxShadow: "var(--shadow-pressed)",
+  },
+  keyListMain: { 
+    display: "flex", 
+    justifyContent: "space-between", 
+    alignItems: "baseline", 
+    gap: 10, 
+    marginBottom: 8 
+  },
   keyListName: { fontWeight: 700, fontSize: 14 },
-  keyListPrefix: { fontFamily: "ui-monospace, monospace", fontSize: 12, opacity: 0.85 },
+  keyListPrefix: { 
+    fontFamily: "ui-monospace, monospace", 
+    fontSize: 12, 
+    color: "var(--text-secondary)" 
+  },
   keyListMeta: {
     display: "flex",
     flexDirection: "column",
     gap: 2,
     fontSize: 10,
-    color: "rgba(255,255,255,0.65)",
-    marginBottom: 10,
+    color: "var(--text-tertiary)",
+    marginBottom: 12,
   },
   revokeBtn: {
-    padding: "6px 12px",
-    borderRadius: 8,
-    border: "1px solid rgba(255,120,120,0.45)",
+    padding: "8px 14px",
+    borderRadius: "var(--radius-sm)",
+    border: "1px solid rgba(255, 107, 107, 0.35)",
     background: "transparent",
-    color: "#ffb4b4",
+    color: "#ff6b6b",
     cursor: "pointer",
     fontSize: 12,
     fontWeight: 600,
+    transition: "var(--transition-fast)",
   },
   newKeyBox: {
-    background: "rgba(100,220,150,0.15)",
-    border: "1px solid rgba(100,220,150,0.35)",
-    borderRadius: 10,
-    padding: "12px 14px",
-    marginBottom: 12,
+    background: "var(--brand-primary-soft)",
+    border: "1px solid var(--border-accent)",
+    borderRadius: "var(--radius-sm)",
+    padding: "14px 16px",
+    marginBottom: 14,
   },
-  newKeyTitle: { fontSize: 12, color: "#6ee7b7", margin: "0 0 10px", fontWeight: 600 },
-  link: { color: "#b3f0ff" },
+  newKeyTitle: { 
+    fontSize: 12, 
+    color: "var(--brand-primary)", 
+    margin: "0 0 12px", 
+    fontWeight: 600 
+  },
+  link: { color: "var(--brand-primary)" },
   errorMsg: {
-    background: "rgba(255,100,100,0.2)",
-    border: "1px solid rgba(255,100,100,0.4)",
-    borderRadius: 10,
-    padding: "10px 14px",
+    background: "rgba(255, 107, 107, 0.1)",
+    border: "1px solid rgba(255, 107, 107, 0.25)",
+    borderRadius: "var(--radius-sm)",
+    padding: "12px 16px",
     fontSize: 13,
-    color: "#ffaaaa",
-    marginBottom: 12,
+    color: "#ff6b6b",
+    marginBottom: 14,
   },
   successMsg: {
-    background: "rgba(100,220,150,0.2)",
-    border: "1px solid rgba(100,220,150,0.4)",
-    borderRadius: 10,
-    padding: "10px 14px",
+    background: "var(--brand-primary-soft)",
+    border: "1px solid var(--border-accent)",
+    borderRadius: "var(--radius-sm)",
+    padding: "12px 16px",
     fontSize: 13,
-    color: "#6ee7b7",
-    marginBottom: 12,
+    color: "var(--brand-primary)",
+    marginBottom: 14,
   },
   saveBtn: {
     width: "100%",
-    marginTop: 4,
-    padding: 13,
-    borderRadius: 12,
-    color: "#fff",
-    fontSize: 15,
+    marginTop: 6,
+    padding: 14,
+    borderRadius: "var(--radius-sm)",
+    color: "var(--text-primary)",
+    fontSize: 14,
     fontWeight: 700,
-    background: "rgba(255,255,255,0.25)",
-    border: "1px solid rgba(255,255,255,0.2)",
+    background: "var(--surface-elevated)",
+    border: "1px solid var(--border-default)",
     cursor: "pointer",
+    boxShadow: "var(--shadow-raised)",
+    transition: "var(--transition-fast)",
   },
   secondaryBtn: {
-    padding: 13,
-    borderRadius: 12,
-    color: "#fff",
-    fontSize: 14,
+    padding: 14,
+    borderRadius: "var(--radius-sm)",
+    color: "var(--text-secondary)",
+    fontSize: 13,
     fontWeight: 600,
-    background: "rgba(255,255,255,0.1)",
-    border: "1px solid rgba(255,255,255,0.2)",
+    background: "var(--surface-raised)",
+    border: "1px solid var(--border-default)",
     cursor: "pointer",
     whiteSpace: "nowrap",
+    transition: "var(--transition-fast)",
   },
-  buttonRow: { display: "flex", flexDirection: "column", gap: 10 },
-  divider: { border: "none", borderTop: "1px solid rgba(255,255,255,0.2)", margin: "24px 0" },
+  buttonRow: { display: "flex", flexDirection: "column", gap: 12 },
+  divider: { 
+    border: "none", 
+    borderTop: "1px solid var(--border-subtle)", 
+    margin: "28px 0" 
+  },
   logoutBtn: {
     width: "100%",
-    padding: 12,
-    borderRadius: 12,
-    border: "1px solid rgba(255,120,120,0.4)",
+    padding: 14,
+    borderRadius: "var(--radius-sm)",
+    border: "1px solid rgba(255, 107, 107, 0.35)",
     background: "transparent",
-    color: "#ffb4b4",
+    color: "#ff6b6b",
     cursor: "pointer",
     fontWeight: 600,
+    transition: "var(--transition-fast)",
   },
 }

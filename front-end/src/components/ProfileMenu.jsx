@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { logout } from "../api/api"
 import { useAuth } from "../hooks/useAuth"
 
@@ -16,18 +16,21 @@ export function ProfileMenu() {
   return (
     <div style={{ position: "relative" }}>
       <div style={styles.profileBar} onClick={() => setOpen(!open)}>
+        <span style={styles.profileIcon}>●</span>
         Profile
       </div>
 
       {open && (
         <div style={styles.popup}>
           <div style={styles.meta}>
-            Gemini:{" "}
+            <span style={styles.metaLabel}>Gemini</span>
             {apiKeys.gemini_configured
-              ? `✓ ${apiKeys.gemini_key_hint || "set"}`
-              : "not set"}
+              ? <span style={styles.metaValue}>✓ {apiKeys.gemini_key_hint || "configured"}</span>
+              : <span style={styles.metaValueWarn}>not configured</span>}
           </div>
+          <div style={styles.divider} />
           <div style={styles.popupItem} onClick={handleLogout}>
+            <span style={styles.logoutIcon}>↳</span>
             Logout
           </div>
         </div>
@@ -38,52 +41,81 @@ export function ProfileMenu() {
 
 const styles = {
   profileBar: {
-    background: "rgba(255,255,255,0.15)",
-    backdropFilter: "blur(8px)",
-    border: "1px solid rgba(255,255,255,0.2)",
-    borderRadius: 20,
-    padding: "6px 14px",
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    background: "var(--surface-raised)",
+    border: "1px solid var(--border-default)",
+    borderRadius: "var(--radius-lg)",
+    padding: "8px 16px",
     fontSize: 12,
-    fontWeight: 700,
-    color: "#fff",
+    fontWeight: 600,
+    color: "var(--text-primary)",
     cursor: "pointer",
     userSelect: "none",
+    boxShadow: "var(--shadow-raised)",
+    transition: "var(--transition-fast)",
+  },
+  profileIcon: {
+    fontSize: 8,
+    color: "var(--brand-primary)",
   },
   popup: {
     position: "absolute",
-    top: "calc(100% + 10px)",
+    top: "calc(100% + 12px)",
     right: 0,
-    background: "rgba(25, 45, 60, 0.9)",
-    backdropFilter: "blur(12px)",
-    border: "1px solid rgba(255,255,255,0.2)",
-    borderRadius: 12,
+    background: "var(--surface-raised)",
+    border: "1px solid var(--border-default)",
+    borderRadius: "var(--radius-md)",
     padding: 8,
-    minWidth: 160,
+    minWidth: 180,
     zIndex: 1000,
-    boxShadow: "0 10px 25px rgba(0,0,0,0.3)",
+    boxShadow: "var(--shadow-raised), 0 16px 40px rgba(0,0,0,0.35)",
     display: "flex",
     flexDirection: "column",
-    gap: 4,
+    gap: 2,
+    animation: "slide-up 0.15s ease",
   },
   meta: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
     fontSize: 11,
-    color: "rgba(255,255,255,0.7)",
-    padding: "6px 10px",
-  },
-  popupLink: {
     padding: "8px 12px",
-    borderRadius: 8,
-    fontSize: 12,
+  },
+  metaLabel: {
+    color: "var(--text-tertiary)",
     fontWeight: 600,
-    color: "#b3f0ff",
-    textDecoration: "none",
+    textTransform: "uppercase",
+    letterSpacing: "0.5px",
+  },
+  metaValue: {
+    color: "var(--brand-primary)",
+    fontWeight: 500,
+  },
+  metaValueWarn: {
+    color: "var(--text-tertiary)",
+    fontWeight: 500,
+  },
+  divider: {
+    height: 1,
+    background: "var(--border-subtle)",
+    margin: "4px 0",
   },
   popupItem: {
-    padding: "8px 12px",
-    borderRadius: 8,
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    padding: "10px 12px",
+    borderRadius: "var(--radius-sm)",
     fontSize: 12,
     fontWeight: 600,
-    color: "#ff8080",
+    color: "#ff6b6b",
     cursor: "pointer",
+    transition: "var(--transition-fast)",
+  },
+  logoutIcon: {
+    fontSize: 14,
+    opacity: 0.8,
   },
 }

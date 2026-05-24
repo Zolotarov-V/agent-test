@@ -34,7 +34,10 @@ export function ApprovalCard({ event, onResolved }) {
 
   return (
     <div style={styles.card} role="region" aria-label="Approval required">
-      <div style={styles.label}>Approval required</div>
+      <div style={styles.label}>
+        <span style={styles.labelIcon}>⚡</span>
+        Approval required
+      </div>
       <p style={styles.intro}>Agent wants to:</p>
       <div style={styles.actionBox}>
         <strong style={styles.toolName}>{tool}</strong>
@@ -73,69 +76,96 @@ export function ApprovalCard({ event, onResolved }) {
 
 const styles = {
   card: {
-    background: "rgba(80,50,0,0.55)",
-    border: "1px solid rgba(255,200,80,0.5)",
-    borderRadius: 12,
-    padding: "14px 16px",
-    backdropFilter: "blur(10px)",
+    background: "rgba(255, 180, 50, 0.06)",
+    border: "1px solid rgba(255, 180, 50, 0.25)",
+    borderRadius: "var(--radius-md)",
+    padding: "16px 20px",
+    boxShadow: "var(--shadow-soft)",
+    animation: "slide-up 0.2s ease",
   },
   label: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
     fontSize: 11,
     fontWeight: 700,
     textTransform: "uppercase",
     letterSpacing: "0.8px",
-    color: "#fcd34d",
-    marginBottom: 8,
-  },
-  intro: { margin: "0 0 8px", fontSize: 14, color: "#fff" },
-  actionBox: {
-    background: "rgba(0,0,0,0.25)",
-    borderRadius: 8,
-    padding: 10,
+    color: "#ffc94d",
     marginBottom: 12,
   },
-  toolName: { fontSize: 14, color: "#fde68a" },
+  labelIcon: {
+    fontSize: 14,
+  },
+  intro: { 
+    margin: "0 0 10px", 
+    fontSize: 14, 
+    color: "var(--text-primary)" 
+  },
+  actionBox: {
+    background: "var(--surface-sunken)",
+    borderRadius: "var(--radius-sm)",
+    padding: 14,
+    marginBottom: 14,
+    boxShadow: "var(--shadow-pressed)",
+  },
+  toolName: { 
+    fontSize: 14, 
+    color: "#ffc94d" 
+  },
   detail: {
-    margin: "8px 0 0",
+    margin: "10px 0 0",
     fontSize: 12,
-    color: "rgba(255,255,255,0.85)",
+    color: "var(--text-secondary)",
     whiteSpace: "pre-wrap",
     wordBreak: "break-word",
-    maxHeight: 120,
+    maxHeight: 140,
     overflow: "auto",
+    fontFamily: "ui-monospace, monospace",
   },
   error: {
     fontSize: 12,
-    color: "#ffb4b4",
-    marginBottom: 8,
-  },
-  actions: { display: "flex", flexWrap: "wrap", gap: 8 },
-  approveBtn: {
+    color: "#ff6b6b",
+    marginBottom: 10,
     padding: "8px 12px",
-    borderRadius: 8,
-    border: "1px solid rgba(110,231,183,0.5)",
-    background: "rgba(16,120,80,0.5)",
-    color: "#ecfdf5",
+    background: "rgba(255, 107, 107, 0.1)",
+    borderRadius: "var(--radius-sm)",
+  },
+  actions: { 
+    display: "flex", 
+    flexWrap: "wrap", 
+    gap: 8 
+  },
+  approveBtn: {
+    padding: "10px 16px",
+    borderRadius: "var(--radius-sm)",
+    border: "1px solid rgba(62, 207, 140, 0.35)",
+    background: "rgba(62, 207, 140, 0.12)",
+    color: "var(--brand-primary)",
     cursor: "pointer",
     fontWeight: 600,
     fontSize: 12,
+    transition: "var(--transition-fast)",
+    boxShadow: "var(--shadow-soft)",
   },
   alwaysBtn: {
-    padding: "8px 12px",
-    borderRadius: 8,
-    border: "1px solid rgba(255,255,255,0.25)",
-    background: "rgba(255,255,255,0.1)",
-    color: "#fff",
+    padding: "10px 16px",
+    borderRadius: "var(--radius-sm)",
+    border: "1px solid var(--border-default)",
+    background: "var(--surface-raised)",
+    color: "var(--text-secondary)",
     cursor: "pointer",
     fontSize: 12,
+    transition: "var(--transition-fast)",
   },
   rejectBtn: {
-    padding: "8px 12px",
-    borderRadius: 8,
-    border: "1px solid rgba(255,120,120,0.5)",
-    background: "rgba(120,30,30,0.45)",
-    color: "#fee2e2",
+    padding: "10px 16px",
+    borderRadius: "var(--radius-sm)",
+    border: "1px solid rgba(255, 107, 107, 0.35)",
+    background: "rgba(255, 107, 107, 0.1)",
+    color: "#ff6b6b",
     cursor: "pointer",
     fontSize: 12,
+    transition: "var(--transition-fast)",
   },
 }

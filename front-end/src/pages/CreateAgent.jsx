@@ -211,9 +211,10 @@ const CreateAgent = () => {
     <div style={styles.root}>
       <div style={styles.topBar}>
         <div style={styles.logoBadge}>
-          Agentic<span style={{ color: "#b3f0ff" }}>Studio</span>
+          <span style={styles.logoText}>Agentic</span>
+          <span style={styles.logoAccent}>Studio</span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <AppNav />
           <ProfileMenu />
         </div>
@@ -221,6 +222,7 @@ const CreateAgent = () => {
 
       {!apiKeys.gemini_configured && (
         <div style={styles.warnBanner}>
+          <span style={styles.warnIcon}>⚠</span>
           Gemini API key required.{" "}
           <span style={styles.warnLink} onClick={() => navigate("/settings")}>
             Open Settings
@@ -252,8 +254,8 @@ const CreateAgent = () => {
               style={{
                 ...styles.input,
                 border: fieldErrors.name
-                  ? "1px solid rgba(255,120,120,0.6)"
-                  : "none",
+                  ? "1px solid rgba(255, 107, 107, 0.5)"
+                  : "1px solid var(--border-subtle)",
               }}
               disabled={loading || agentLoading}
               placeholder="Research Assistant"
@@ -276,8 +278,8 @@ const CreateAgent = () => {
               style={{
                 ...styles.input,
                 border: fieldErrors.role
-                  ? "1px solid rgba(255,120,120,0.6)"
-                  : "none",
+                  ? "1px solid rgba(255, 107, 107, 0.5)"
+                  : "1px solid var(--border-subtle)",
               }}
               disabled={loading || agentLoading}
               placeholder="Senior Software Engineer"
@@ -301,8 +303,8 @@ const CreateAgent = () => {
               style={{
                 ...styles.textarea,
                 border: fieldErrors.backstory
-                  ? "1px solid rgba(255,120,120,0.6)"
-                  : "none",
+                  ? "1px solid rgba(255, 107, 107, 0.5)"
+                  : "1px solid var(--border-subtle)",
               }}
               disabled={loading || agentLoading}
               placeholder="10 years of experience building SaaS products…"
@@ -413,12 +415,7 @@ const CreateAgent = () => {
                     }}
                     style={{
                       ...styles.toolCard,
-                      background: checked
-                        ? "rgba(80,200,180,0.18)"
-                        : "rgba(0,0,0,0.18)",
-                      border: checked
-                        ? "1px solid rgba(110,231,183,0.55)"
-                        : "1px solid rgba(255,255,255,0.1)",
+                      ...(checked ? styles.toolCardActive : {}),
                       cursor: loading || agentLoading ? "not-allowed" : "pointer",
                       opacity: loading || agentLoading ? 0.6 : 1,
                     }}
@@ -428,10 +425,7 @@ const CreateAgent = () => {
                       <span
                         style={{
                           ...styles.toolCheckbox,
-                          background: checked ? "#6ee7b7" : "rgba(255,255,255,0.1)",
-                          border: checked
-                            ? "1px solid #6ee7b7"
-                            : "1px solid rgba(255,255,255,0.25)",
+                          ...(checked ? styles.toolCheckboxActive : {}),
                         }}
                       >
                         {checked && <span style={styles.checkmark}>✓</span>}
@@ -470,8 +464,8 @@ const CreateAgent = () => {
         onClick={handleSave}
         style={{
           ...styles.saveBtn,
-          opacity: canSave ? 1 : 0.5,
-          cursor: loading ? "wait" : "pointer",
+          opacity: canSave ? 1 : 0.4,
+          cursor: loading ? "wait" : canSave ? "pointer" : "not-allowed",
         }}
       >
         {loading ? "Saving…" : isEditMode ? "Update agent" : "Save agent"}
@@ -485,159 +479,241 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     height: "100vh",
-    padding: 12,
-    gap: 10,
+    padding: 16,
+    gap: 12,
     boxSizing: "border-box",
-    background: "linear-gradient(160deg,#5ececa 0%,#3a9fbf 40%,#1a6080 100%)",
-    color: "#fff",
+    background: "var(--surface-base)",
+    color: "var(--text-primary)",
     fontFamily: "-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif",
   },
   topBar: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: "6px 8px",
+    padding: "8px 12px",
     flexShrink: 0,
   },
   logoBadge: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
     fontWeight: 700,
-    fontSize: 15,
-    color: "#fff",
-    background: "rgba(255,255,255,0.15)",
-    backdropFilter: "blur(8px)",
-    border: "1px solid rgba(255,255,255,0.2)",
-    borderRadius: 12,
-    padding: "7px 16px",
+    fontSize: 16,
+    background: "var(--surface-raised)",
+    border: "1px solid var(--border-default)",
+    borderRadius: "var(--radius-md)",
+    padding: "10px 20px",
+    boxShadow: "var(--shadow-raised)",
+  },
+  logoText: {
+    color: "var(--text-primary)",
+  },
+  logoAccent: {
+    color: "var(--brand-primary)",
   },
   warnBanner: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
     fontSize: 13,
-    padding: "10px 14px",
-    borderRadius: 10,
-    background: "rgba(255,180,50,0.15)",
-    border: "1px solid rgba(255,200,80,0.35)",
+    padding: "12px 16px",
+    borderRadius: "var(--radius-md)",
+    background: "rgba(255, 180, 50, 0.08)",
+    border: "1px solid rgba(255, 180, 50, 0.2)",
   },
-  warnLink: { textDecoration: "underline", cursor: "pointer", fontWeight: 700 },
+  warnIcon: {
+    fontSize: 14,
+    color: "#ffc94d",
+  },
+  warnLink: { 
+    textDecoration: "underline", 
+    cursor: "pointer", 
+    fontWeight: 700,
+    color: "var(--brand-primary)",
+  },
   scroll: { flex: 1, overflowY: "auto" },
-  card: { padding: 16, borderRadius: 16, background: "rgba(255,255,255,.08)" },
+  card: { 
+    padding: 24, 
+    borderRadius: "var(--radius-lg)", 
+    background: "var(--surface-raised)",
+    border: "1px solid var(--border-default)",
+    boxShadow: "var(--shadow-raised)",
+  },
   providerNote: {
     fontSize: 13,
-    color: "rgba(255,255,255,0.75)",
+    color: "var(--text-secondary)",
     marginTop: 0,
-    marginBottom: 16,
+    marginBottom: 20,
   },
-  section: { marginBottom: 20 },
-  label: { display: "block", marginBottom: 8, fontWeight: 700 },
+  section: { marginBottom: 24 },
+  label: { 
+    display: "block", 
+    marginBottom: 10, 
+    fontWeight: 700,
+    fontSize: 11,
+    textTransform: "uppercase",
+    letterSpacing: "0.5px",
+    color: "var(--text-secondary)",
+  },
   hint: {
     display: "block",
-    marginTop: 6,
+    marginTop: 8,
     fontSize: 12,
-    color: "rgba(255,255,255,0.55)",
+    color: "var(--text-tertiary)",
   },
   input: {
     width: "100%",
-    padding: 12,
-    borderRadius: 10,
-    border: "none",
-    background: "rgba(0,0,0,.2)",
-    color: "#fff",
+    padding: 14,
+    borderRadius: "var(--radius-sm)",
+    border: "1px solid var(--border-subtle)",
+    background: "var(--surface-sunken)",
+    color: "var(--text-primary)",
     boxSizing: "border-box",
+    fontSize: 14,
+    boxShadow: "var(--shadow-pressed)",
+    outline: "none",
+    transition: "var(--transition-fast)",
   },
   textarea: {
     width: "100%",
-    padding: 12,
-    borderRadius: 10,
-    border: "none",
-    background: "rgba(0,0,0,.2)",
-    color: "#fff",
+    padding: 14,
+    borderRadius: "var(--radius-sm)",
+    border: "1px solid var(--border-subtle)",
+    background: "var(--surface-sunken)",
+    color: "var(--text-primary)",
     boxSizing: "border-box",
     resize: "vertical",
+    fontSize: 14,
+    boxShadow: "var(--shadow-pressed)",
+    outline: "none",
+    transition: "var(--transition-fast)",
   },
-  fieldError: { display: "block", marginTop: 6, fontSize: 12, color: "#ffb4b4" },
+  fieldError: { 
+    display: "block", 
+    marginTop: 8, 
+    fontSize: 12, 
+    color: "#ff6b6b" 
+  },
   toolsWarn: {
     fontSize: 12,
-    color: "#fde68a",
-    background: "rgba(120,80,0,0.25)",
-    border: "1px solid rgba(255,200,80,0.35)",
-    borderRadius: 10,
-    padding: "10px 12px",
-    marginBottom: 8,
+    color: "#ffc94d",
+    background: "rgba(255, 180, 50, 0.08)",
+    border: "1px solid rgba(255, 180, 50, 0.2)",
+    borderRadius: "var(--radius-sm)",
+    padding: "12px 14px",
+    marginBottom: 12,
     lineHeight: 1.5,
   },
   inlineCode: {
     fontFamily: "ui-monospace, monospace",
     fontSize: 11,
+    background: "var(--surface-sunken)",
+    padding: "2px 6px",
+    borderRadius: 4,
   },
   submitError: {
     fontSize: 13,
-    color: "#ffb4b4",
-    background: "rgba(255,80,80,0.15)",
-    border: "1px solid rgba(255,120,120,0.35)",
-    borderRadius: 10,
-    padding: "10px 12px",
-    marginBottom: 8,
+    color: "#ff6b6b",
+    background: "rgba(255, 107, 107, 0.1)",
+    border: "1px solid rgba(255, 107, 107, 0.25)",
+    borderRadius: "var(--radius-sm)",
+    padding: "12px 14px",
+    marginBottom: 12,
   },
   successMessage: {
     fontSize: 13,
-    color: "#b3f0ff",
-    background: "rgba(80,180,255,0.15)",
-    border: "1px solid rgba(80,180,255,0.35)",
-    borderRadius: 10,
-    padding: "10px 12px",
+    color: "var(--brand-primary)",
+    background: "var(--brand-primary-soft)",
+    border: "1px solid var(--border-accent)",
+    borderRadius: "var(--radius-sm)",
+    padding: "12px 14px",
   },
   saveBtn: {
-    padding: 16,
-    border: "none",
-    borderRadius: 12,
+    padding: 18,
+    border: "1px solid var(--border-accent)",
+    borderRadius: "var(--radius-md)",
     fontWeight: 700,
-    color: "#fff",
-    background: "rgba(255,255,255,.2)",
+    color: "var(--text-primary)",
+    background: "var(--surface-elevated)",
+    fontSize: 15,
+    boxShadow: "var(--shadow-raised)",
+    transition: "var(--transition-fast)",
   },
   toolsHeader: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 10,
+    marginBottom: 14,
   },
   selectAllBtn: {
-    padding: "4px 12px",
-    borderRadius: 8,
-    border: "1px solid rgba(255,255,255,0.2)",
-    background: "rgba(255,255,255,0.1)",
-    color: "#fff",
+    padding: "6px 14px",
+    borderRadius: "var(--radius-sm)",
+    border: "1px solid var(--border-default)",
+    background: "var(--surface-raised)",
+    color: "var(--text-secondary)",
     fontSize: 11,
     fontWeight: 600,
     cursor: "pointer",
+    transition: "var(--transition-fast)",
   },
   toolsGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
-    gap: 8,
+    gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+    gap: 10,
   },
   toolCard: {
-    borderRadius: 10,
-    padding: "10px 10px",
-    transition: "background 0.15s, border 0.15s",
+    borderRadius: "var(--radius-sm)",
+    padding: "12px 14px",
+    transition: "var(--transition-fast)",
     userSelect: "none",
+    background: "var(--surface-sunken)",
+    border: "1px solid var(--border-subtle)",
+    boxShadow: "var(--shadow-pressed)",
+  },
+  toolCardActive: {
+    background: "var(--brand-primary-soft)",
+    border: "1px solid var(--border-accent)",
+    boxShadow: "var(--shadow-soft)",
   },
   toolCheckRow: {
     display: "flex",
     alignItems: "center",
-    gap: 6,
-    marginBottom: 4,
+    gap: 8,
+    marginBottom: 6,
   },
-  toolLabel: { fontSize: 12, fontWeight: 700, color: "#fff", flex: 1 },
+  toolLabel: { 
+    fontSize: 12, 
+    fontWeight: 700, 
+    color: "var(--text-primary)", 
+    flex: 1 
+  },
   toolCheckbox: {
-    width: 16,
-    height: 16,
+    width: 18,
+    height: 18,
     borderRadius: 4,
     flexShrink: 0,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    transition: "background 0.15s, border 0.15s",
+    transition: "var(--transition-fast)",
+    background: "var(--surface-base)",
+    border: "1px solid var(--border-default)",
   },
-  checkmark: { fontSize: 10, color: "#065f46", fontWeight: 700, lineHeight: 1 },
-  toolDesc: { fontSize: 10, color: "rgba(255,255,255,0.5)", lineHeight: 1.4 },
+  toolCheckboxActive: {
+    background: "var(--brand-primary)",
+    border: "1px solid var(--brand-primary)",
+  },
+  checkmark: { 
+    fontSize: 10, 
+    color: "var(--surface-base)", 
+    fontWeight: 700, 
+    lineHeight: 1 
+  },
+  toolDesc: { 
+    fontSize: 10, 
+    color: "var(--text-tertiary)", 
+    lineHeight: 1.4 
+  },
 }
 
 export default CreateAgent

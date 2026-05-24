@@ -127,15 +127,22 @@ export function LiveView() {
       {/* TOP BAR */}
       <div style={styles.topBar}>
         <div style={styles.logoBadge}>
-          Agentic<span style={{ color: '#b3f0ff' }}>Studio</span>
+          <span style={styles.logoText}>Agentic</span>
+          <span style={styles.logoAccent}>Studio</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <AppNav />
           {status === 'running' && (
-            <span style={styles.statusRunning}>Step {step} · running...</span>
+            <span style={styles.statusRunning}>
+              <span style={styles.statusDot} />
+              Step {step} · running
+            </span>
           )}
           {status === 'done' && (
-            <span style={styles.statusDone}>Done in {step} steps</span>
+            <span style={styles.statusDone}>
+              <span style={styles.statusDotDone} />
+              Done in {step} steps
+            </span>
           )}
           {status === 'error' && (
             <span style={styles.statusError}>Run failed</span>
@@ -146,6 +153,7 @@ export function LiveView() {
 
       {!apiKeys.gemini_configured && (
         <div style={styles.warnBanner}>
+          <span style={styles.warnIcon}>⚠</span>
           Add your Gemini API key in{' '}
           <span style={styles.warnLink} onClick={() => navigate('/settings')}>
             Settings
@@ -178,15 +186,13 @@ export function LiveView() {
                 onClick={() => handleAgentSwitch(agent)}
                 style={{
                   ...styles.agentItem,
-                  background: activeAgent?.id === agent.id
-                    ? 'rgba(255,255,255,0.28)'
-                    : 'rgba(0,0,0,0.2)',
-                  border: activeAgent?.id === agent.id
-                    ? '1px solid rgba(255,255,255,0.5)'
-                    : '1px solid rgba(255,255,255,0.15)',
+                  ...(activeAgent?.id === agent.id ? styles.agentItemActive : {}),
                 }}
               >
-                <div style={styles.agentDot} />
+                <div style={{
+                  ...styles.agentDot,
+                  background: activeAgent?.id === agent.id ? 'var(--brand-primary)' : 'var(--text-tertiary)',
+                }} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={styles.agentName}>{agent.name}</div>
                 </div>
@@ -209,7 +215,8 @@ export function LiveView() {
             style={styles.newAgentBtn}
             onClick={() => navigate('/constructor')}
           >
-            + New Agent
+            <span style={styles.plusIcon}>+</span>
+            New Agent
           </div>
         </div>
 
@@ -219,10 +226,11 @@ export function LiveView() {
           <div ref={feedRef} style={styles.feed}>
             {events.length === 0 && status === 'idle' && (
               <div style={styles.emptyState}>
-                <div style={{ fontWeight: 600, marginBottom: 4 }}>
+                <div style={styles.emptyIcon}>◎</div>
+                <div style={styles.emptyTitle}>
                   {activeAgent?.name ?? 'No agent selected'}
                 </div>
-                <div>
+                <div style={styles.emptySubtitle}>
                   {activeAgent
                     ? 'Ask your agent something to get started'
                     : 'Create an agent in the constructor first'}
@@ -280,8 +288,8 @@ export function LiveView() {
                 style={{
                   ...styles.attachBtn,
                   background: showUploadModal
-                    ? 'rgba(255,255,255,0.25)'
-                    : 'rgba(255,255,255,0.12)',
+                    ? 'var(--surface-elevated)'
+                    : 'var(--surface-sunken)',
                 }}
                 title="Attach files"
                 disabled={status === 'running'}
@@ -322,7 +330,7 @@ export function LiveView() {
                 disabled={!canRun}
                 style={{
                   ...styles.runBtn,
-                  background: canRun ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
+                  opacity: canRun ? 1 : 0.4,
                   cursor: canRun ? 'pointer' : 'not-allowed',
                 }}
               >
@@ -340,160 +348,348 @@ export function LiveView() {
 
 const styles = {
   root: {
-    display: 'flex', flexDirection: 'column', height: '100vh',
-    background: 'linear-gradient(160deg, #5ececa 0%, #3a9fbf 40%, #1a6080 100%)',
-    color: '#fff',
+    display: 'flex', 
+    flexDirection: 'column', 
+    height: '100vh',
+    background: 'var(--surface-base)',
+    color: 'var(--text-primary)',
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-    padding: 12, gap: 10, boxSizing: 'border-box',
+    padding: 16, 
+    gap: 12, 
+    boxSizing: 'border-box',
   },
   topBar: {
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    padding: '6px 8px', flexShrink: 0,
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'space-between',
+    padding: '8px 12px', 
+    flexShrink: 0,
   },
   logoBadge: {
-    fontWeight: 700, fontSize: 15, color: '#fff',
-    background: 'rgba(255,255,255,0.15)',
-    backdropFilter: 'blur(8px)',
-    border: '1px solid rgba(255,255,255,0.2)',
-    borderRadius: 12, padding: '7px 16px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 4,
+    fontWeight: 700, 
+    fontSize: 16,
+    background: 'var(--surface-raised)',
+    border: '1px solid var(--border-default)',
+    borderRadius: 'var(--radius-md)',
+    padding: '10px 20px',
+    boxShadow: 'var(--shadow-raised)',
+  },
+  logoText: {
+    color: 'var(--text-primary)',
+  },
+  logoAccent: {
+    color: 'var(--brand-primary)',
   },
   warnBanner: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
     fontSize: 13,
-    padding: '8px 12px',
-    borderRadius: 10,
-    background: 'rgba(255,180,50,0.15)',
-    border: '1px solid rgba(255,200,80,0.35)',
+    padding: '12px 16px',
+    borderRadius: 'var(--radius-md)',
+    background: 'rgba(255, 180, 50, 0.08)',
+    border: '1px solid rgba(255, 180, 50, 0.2)',
     flexShrink: 0,
+  },
+  warnIcon: {
+    fontSize: 14,
+    color: '#ffc94d',
   },
   warnLink: {
     textDecoration: 'underline',
     cursor: 'pointer',
     fontWeight: 700,
+    color: 'var(--brand-primary)',
   },
-  statusRunning: { fontSize: 12, color: '#fff', background: 'rgba(255,255,255,0.15)', padding: '5px 14px', borderRadius: 20, backdropFilter: 'blur(8px)' },
-  statusDone: { fontSize: 12, color: '#fff', background: 'rgba(255,255,255,0.15)', padding: '5px 14px', borderRadius: 20 },
-  statusError: { fontSize: 12, color: '#ffb4b4', background: 'rgba(255,80,80,0.2)', padding: '5px 14px', borderRadius: 20 },
+  statusRunning: { 
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    fontSize: 12, 
+    color: 'var(--text-secondary)', 
+    background: 'var(--surface-raised)', 
+    padding: '8px 16px', 
+    borderRadius: 'var(--radius-lg)',
+    border: '1px solid var(--border-default)',
+    boxShadow: 'var(--shadow-soft)',
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: '50%',
+    background: 'var(--brand-primary)',
+    animation: 'pulse-soft 1.5s infinite',
+  },
+  statusDone: { 
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    fontSize: 12, 
+    color: 'var(--brand-primary)', 
+    background: 'var(--surface-raised)', 
+    padding: '8px 16px', 
+    borderRadius: 'var(--radius-lg)',
+    border: '1px solid var(--border-accent)',
+  },
+  statusDotDone: {
+    width: 6,
+    height: 6,
+    borderRadius: '50%',
+    background: 'var(--brand-primary)',
+  },
+  statusError: { 
+    fontSize: 12, 
+    color: '#ff6b6b', 
+    background: 'rgba(255, 107, 107, 0.1)', 
+    padding: '8px 16px', 
+    borderRadius: 'var(--radius-lg)',
+    border: '1px solid rgba(255, 107, 107, 0.25)',
+  },
   errorBanner: {
     fontSize: 13,
-    color: '#ffb4b4',
-    background: 'rgba(255,80,80,0.15)',
-    border: '1px solid rgba(255,120,120,0.35)',
-    borderRadius: 10,
-    padding: '10px 12px',
+    color: '#ff6b6b',
+    background: 'rgba(255, 107, 107, 0.1)',
+    border: '1px solid rgba(255, 107, 107, 0.25)',
+    borderRadius: 'var(--radius-md)',
+    padding: '12px 16px',
   },
-  body: { display: 'flex', flex: 1, gap: 10, overflow: 'hidden' },
+  body: { display: 'flex', flex: 1, gap: 12, overflow: 'hidden' },
   sidebar: {
-    width: 180, flexShrink: 0, background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(12px)',
-    borderRadius: 16, border: '1px solid rgba(255,255,255,0.15)', padding: 12,
-    display: 'flex', flexDirection: 'column', gap: 8, overflowY: 'auto',
+    width: 200, 
+    flexShrink: 0, 
+    background: 'var(--surface-raised)',
+    borderRadius: 'var(--radius-lg)', 
+    border: '1px solid var(--border-default)', 
+    padding: 14,
+    display: 'flex', 
+    flexDirection: 'column', 
+    gap: 10, 
+    overflowY: 'auto',
+    boxShadow: 'var(--shadow-raised)',
   },
-  sidebarLabel: { fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.6px', color: 'rgba(255,255,255,0.8)', paddingBottom: 4, borderBottom: '1px solid rgba(255,255,255,0.08)' },
-  sidebarHint: { fontSize: 12, color: 'rgba(255,255,255,0.55)', padding: '4px 2px' },
-  sidebarError: { fontSize: 12, color: '#ffb4b4', padding: '4px 2px' },
-  agentItem: { display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', borderRadius: 10, cursor: 'pointer', transition: 'all 0.15s' },
-  agentDot: { width: 6, height: 6, borderRadius: '50%', background: '#6ee7b7', flexShrink: 0 },
-  agentName: { fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.9)' },
+  sidebarLabel: { 
+    fontSize: 10, 
+    fontWeight: 700, 
+    textTransform: 'uppercase', 
+    letterSpacing: '0.8px', 
+    color: 'var(--text-tertiary)', 
+    paddingBottom: 8, 
+    borderBottom: '1px solid var(--border-subtle)' 
+  },
+  sidebarHint: { fontSize: 12, color: 'var(--text-tertiary)', padding: '4px 2px' },
+  sidebarError: { fontSize: 12, color: '#ff6b6b', padding: '4px 2px' },
+  agentItem: { 
+    display: 'flex', 
+    alignItems: 'center', 
+    gap: 10, 
+    padding: '10px 12px', 
+    borderRadius: 'var(--radius-sm)', 
+    cursor: 'pointer', 
+    transition: 'var(--transition-fast)',
+    background: 'var(--surface-sunken)',
+    border: '1px solid var(--border-subtle)',
+    boxShadow: 'var(--shadow-pressed)',
+  },
+  agentItemActive: {
+    background: 'var(--surface-elevated)',
+    border: '1px solid var(--border-accent)',
+    boxShadow: 'var(--shadow-soft)',
+  },
+  agentDot: { 
+    width: 8, 
+    height: 8, 
+    borderRadius: '50%', 
+    flexShrink: 0,
+    transition: 'var(--transition-fast)',
+  },
+  agentName: { 
+    fontSize: 13, 
+    fontWeight: 600, 
+    color: 'var(--text-primary)' 
+  },
   agentEditBtn: {
     flexShrink: 0,
-    padding: '2px 6px',
+    padding: '4px 10px',
     fontSize: 10,
     fontWeight: 600,
-    borderRadius: 6,
-    border: '1px solid rgba(255,255,255,0.25)',
-    background: 'rgba(255,255,255,0.08)',
-    color: 'rgba(255,255,255,0.85)',
+    borderRadius: 'var(--radius-sm)',
+    border: '1px solid var(--border-default)',
+    background: 'var(--surface-raised)',
+    color: 'var(--text-secondary)',
     cursor: 'pointer',
+    transition: 'var(--transition-fast)',
   },
-  newAgentBtn: { marginTop: 'auto', padding: '8px 10px', background: 'rgba(255,255,255,0.06)', border: '1px dashed rgba(255,255,255,0.2)', borderRadius: 10, fontSize: 12, color: 'rgba(255,255,255,0.5)', cursor: 'pointer', textAlign: 'center' },
-  main: { flex: 1, display: 'flex', flexDirection: 'column', gap: 10, overflow: 'hidden' },
+  newAgentBtn: { 
+    marginTop: 'auto', 
+    padding: '12px 14px', 
+    background: 'var(--surface-sunken)', 
+    border: '1px dashed var(--border-strong)', 
+    borderRadius: 'var(--radius-sm)', 
+    fontSize: 12, 
+    color: 'var(--text-tertiary)', 
+    cursor: 'pointer', 
+    textAlign: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    transition: 'var(--transition-fast)',
+  },
+  plusIcon: {
+    fontSize: 16,
+    fontWeight: 300,
+  },
+  main: { flex: 1, display: 'flex', flexDirection: 'column', gap: 12, overflow: 'hidden' },
   feed: {
-    flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: 8,
-    background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(12px)',
-    borderRadius: 16, border: '2px solid rgba(80,180,255,0.6)',
-    boxShadow: '0 0 30px rgba(80,180,255,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
+    flex: 1, 
+    overflowY: 'auto', 
+    padding: '20px', 
+    display: 'flex', 
+    flexDirection: 'column', 
+    gap: 10,
+    background: 'var(--surface-raised)',
+    borderRadius: 'var(--radius-lg)', 
+    border: '1px solid var(--border-default)',
+    boxShadow: 'var(--shadow-raised), var(--shadow-glow)',
   },
-  userBubble: { alignSelf: 'flex-end', background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '16px 16px 4px 16px', padding: '10px 14px', fontSize: 14, color: '#fff', maxWidth: '70%', wordBreak: 'break-word', backdropFilter: 'blur(8px)' },
-  emptyState: { textAlign: 'center', marginTop: 60, color: 'rgba(255,255,255,0.5)', fontSize: 13 },
+  userBubble: { 
+    alignSelf: 'flex-end', 
+    background: 'var(--surface-elevated)', 
+    border: '1px solid var(--border-accent)', 
+    borderRadius: '18px 18px 6px 18px', 
+    padding: '12px 18px', 
+    fontSize: 14, 
+    color: 'var(--text-primary)', 
+    maxWidth: '70%', 
+    wordBreak: 'break-word',
+    boxShadow: 'var(--shadow-soft)',
+  },
+  emptyState: { 
+    textAlign: 'center', 
+    marginTop: 80, 
+    color: 'var(--text-tertiary)', 
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 12,
+  },
+  emptyIcon: {
+    fontSize: 48,
+    color: 'var(--text-tertiary)',
+    opacity: 0.5,
+  },
+  emptyTitle: {
+    fontWeight: 600,
+    fontSize: 16,
+    color: 'var(--text-secondary)',
+  },
+  emptySubtitle: {
+    fontSize: 13,
+  },
   // Input wrapper (chips + row)
   inputWrapper: {
-    display: 'flex', flexDirection: 'column', gap: 6, flexShrink: 0,
+    display: 'flex', 
+    flexDirection: 'column', 
+    gap: 8, 
+    flexShrink: 0,
   },
   fileChipsRow: {
-    display: 'flex', flexWrap: 'wrap', gap: 6,
+    display: 'flex', 
+    flexWrap: 'wrap', 
+    gap: 8,
     padding: '2px 4px',
   },
   fileChip: {
-    display: 'flex', alignItems: 'center', gap: 5,
-    background: 'rgba(255,255,255,0.15)',
-    border: '1px solid rgba(255,255,255,0.25)',
-    borderRadius: 20, padding: '4px 8px 4px 8px',
-    fontSize: 11, color: '#fff', maxWidth: 180,
+    display: 'flex', 
+    alignItems: 'center', 
+    gap: 6,
+    background: 'var(--surface-raised)',
+    border: '1px solid var(--border-default)',
+    borderRadius: 'var(--radius-lg)', 
+    padding: '6px 12px',
+    fontSize: 11, 
+    color: 'var(--text-primary)', 
+    maxWidth: 180,
+    boxShadow: 'var(--shadow-soft)',
   },
   chipName: {
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+    overflow: 'hidden', 
+    textOverflow: 'ellipsis', 
+    whiteSpace: 'nowrap',
     maxWidth: 110,
   },
   chipRemove: {
-    cursor: 'pointer', fontSize: 15, opacity: 0.7,
-    lineHeight: 1, marginLeft: 2, flexShrink: 0,
+    cursor: 'pointer', 
+    fontSize: 15, 
+    opacity: 0.5,
+    lineHeight: 1, 
+    marginLeft: 2, 
+    flexShrink: 0,
+    transition: 'var(--transition-fast)',
   },
   inputArea: {
-    display: 'flex', gap: 8, padding: '10px 14px',
-    background: 'rgba(0,0,0,0.15)', backdropFilter: 'blur(12px)',
-    borderRadius: 14, border: '1px solid rgba(255,255,255,0.1)',
+    display: 'flex', 
+    gap: 10, 
+    padding: '12px 16px',
+    background: 'var(--surface-raised)', 
+    borderRadius: 'var(--radius-md)', 
+    border: '1px solid var(--border-default)',
     alignItems: 'center',
+    boxShadow: 'var(--shadow-raised)',
   },
   // + Attach button
   attachBtn: {
-    width: 34, height: 34, borderRadius: 10,
-    border: '1px solid rgba(255,255,255,0.2)',
-    color: '#fff', fontSize: 22, fontWeight: 300,
-    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-    lineHeight: 1, padding: 0, flexShrink: 0,
-    transition: 'background 0.15s',
-  },
-  // Upload dropdown
-  uploadMenu: {
-    position: 'absolute',
-    bottom: 'calc(100% + 8px)',
-    left: 0,
-    background: 'rgba(15, 35, 55, 0.96)',
-    backdropFilter: 'blur(16px)',
-    border: '1px solid rgba(255,255,255,0.18)',
-    borderRadius: 12,
-    padding: 6,
-    minWidth: 185,
-    zIndex: 1000,
-    boxShadow: '0 8px 28px rgba(0,0,0,0.45)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 2,
-  },
-  uploadMenuHeader: {
-    fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
-    letterSpacing: '0.6px', color: 'rgba(255,255,255,0.4)',
-    padding: '4px 10px 6px',
-  },
-  uploadMenuItem: {
-    display: 'flex', alignItems: 'center', gap: 9,
-    padding: '8px 10px', borderRadius: 8,
-    fontSize: 12, fontWeight: 500, color: 'rgba(255,255,255,0.9)',
-    cursor: 'pointer',
-    transition: 'background 0.1s',
+    width: 38, 
+    height: 38, 
+    borderRadius: 'var(--radius-sm)',
+    border: '1px solid var(--border-default)',
+    color: 'var(--text-secondary)', 
+    fontSize: 22, 
+    fontWeight: 300,
+    cursor: 'pointer', 
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'center',
+    lineHeight: 1, 
+    padding: 0, 
+    flexShrink: 0,
+    transition: 'var(--transition-fast)',
+    boxShadow: 'var(--shadow-pressed)',
   },
   input: {
-    flex: 1, background: 'rgba(255,255,255,0.1)',
-    border: '1px solid rgba(255,255,255,0.15)',
-    borderRadius: 10, padding: '9px 14px',
-    color: '#fff', fontSize: 13, outline: 'none',
+    flex: 1, 
+    background: 'var(--surface-sunken)',
+    border: '1px solid var(--border-subtle)',
+    borderRadius: 'var(--radius-sm)', 
+    padding: '12px 16px',
+    color: 'var(--text-primary)', 
+    fontSize: 13, 
+    outline: 'none',
+    boxShadow: 'var(--shadow-pressed)',
+    transition: 'var(--transition-fast)',
   },
   resetBtn: {
-    padding: '9px 14px', background: 'rgba(255,255,255,0.1)',
-    border: '1px solid rgba(255,255,255,0.15)',
-    borderRadius: 10, color: '#fff', fontSize: 13, cursor: 'pointer',
+    padding: '12px 16px', 
+    background: 'var(--surface-sunken)',
+    border: '1px solid var(--border-default)',
+    borderRadius: 'var(--radius-sm)', 
+    color: 'var(--text-secondary)', 
+    fontSize: 13, 
+    cursor: 'pointer',
+    transition: 'var(--transition-fast)',
   },
   runBtn: {
-    padding: '9px 18px', border: '1px solid rgba(255,255,255,0.2)',
-    borderRadius: 10, color: '#fff', fontSize: 13, fontWeight: 600,
+    padding: '12px 22px', 
+    border: '1px solid var(--border-accent)',
+    borderRadius: 'var(--radius-sm)', 
+    color: 'var(--text-primary)', 
+    fontSize: 13, 
+    fontWeight: 600,
+    background: 'var(--surface-elevated)',
+    boxShadow: 'var(--shadow-raised)',
+    transition: 'var(--transition-fast)',
   },
 }

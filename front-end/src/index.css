@@ -1,16 +1,135 @@
 @import "tailwindcss";
 
+/* ========== NEO-SKEUOMORPHISM DESIGN SYSTEM ========== */
+
+:root {
+  /* Primary Surface Colors */
+  --surface-base: #1a1d23;
+  --surface-raised: #22262e;
+  --surface-sunken: #14161a;
+  --surface-elevated: #2a2f38;
+  
+  /* Brand Colors */
+  --brand-primary: #3ecfcf;
+  --brand-primary-soft: rgba(62, 207, 207, 0.15);
+  --brand-secondary: #b3f0ff;
+  
+  /* Text Colors */
+  --text-primary: #f5f7fa;
+  --text-secondary: rgba(245, 247, 250, 0.7);
+  --text-tertiary: rgba(245, 247, 250, 0.45);
+  --text-accent: #3ecfcf;
+  
+  /* Border Colors */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --border-accent: rgba(62, 207, 207, 0.35);
+  
+  /* Neumorphic Shadows */
+  --shadow-raised: 
+    6px 6px 16px rgba(0, 0, 0, 0.4),
+    -4px -4px 12px rgba(255, 255, 255, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --shadow-pressed:
+    inset 4px 4px 10px rgba(0, 0, 0, 0.35),
+    inset -2px -2px 8px rgba(255, 255, 255, 0.02);
+  --shadow-soft:
+    4px 4px 12px rgba(0, 0, 0, 0.25),
+    -2px -2px 8px rgba(255, 255, 255, 0.02);
+  --shadow-glow: 0 0 30px rgba(62, 207, 207, 0.12);
+  
+  /* Spacing */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========== BASE STYLES ========== */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--surface-base);
+  color: var(--text-primary);
+  font-family: 'Frutiger', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========== ANIMATIONS ========== */
+
 @keyframes settings-spin {
   to {
     transform: rotate(360deg);
   }
 }
 
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ========== SCROLLBAR ========== */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface-sunken);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  border: 2px solid transparent;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* ========== FONT FACES ========== */
+
 @font-face {
   font-family: 'Frutiger';
   src: url('./assets/fonts/Frutiger.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -18,4 +137,29 @@
   src: url('./assets/fonts/Frutiger-Bold.ttf') format('truetype');
   font-weight: bold;
   font-style: normal;
+  font-display: swap;
+}
+
+/* ========== SELECTION ========== */
+
+::selection {
+  background: rgba(62, 207, 207, 0.3);
+  color: var(--text-primary);
+}
+
+/* ========== FOCUS STYLES ========== */
+
+:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* ========== INPUT AUTOFILL ========== */
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text-primary);
+  -webkit-box-shadow: 0 0 0px 1000px var(--surface-sunken) inset;
+  transition: background-color 5000s ease-in-out 0s;
 }

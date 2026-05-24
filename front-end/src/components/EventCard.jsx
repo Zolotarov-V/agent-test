@@ -2,28 +2,46 @@ import { ApprovalCard } from "./ApprovalCard"
 
 const STYLES = {
   thought: {
-    bg: 'rgba(0,30,40,0.45)', border: 'rgba(255,255,255,0.15)',
-    label: 'rgba(255,255,255,0.5)', text: 'rgba(255,255,255,0.9)', labelText: 'Thinking',
+    bg: 'var(--surface-sunken)', 
+    border: 'var(--border-subtle)',
+    label: 'var(--text-tertiary)', 
+    text: 'var(--text-secondary)', 
+    labelText: 'Thinking',
   },
   tool_call: {
-    bg: 'rgba(0,40,80,0.5)', border: 'rgba(100,180,255,0.4)',
-    label: '#7dd3fc', text: '#e0f2fe', labelText: 'Tool Call',
+    bg: 'rgba(62, 140, 207, 0.08)', 
+    border: 'rgba(62, 140, 207, 0.25)',
+    label: '#7eb8e7', 
+    text: 'var(--text-primary)', 
+    labelText: 'Tool Call',
   },
   tool_result: {
-    bg: 'rgba(0,50,30,0.5)', border: 'rgba(80,220,140,0.4)',
-    label: '#6ee7b7', text: '#ecfdf5', labelText: 'Result',
+    bg: 'rgba(62, 207, 140, 0.08)', 
+    border: 'rgba(62, 207, 140, 0.25)',
+    label: 'var(--brand-primary)', 
+    text: 'var(--text-primary)', 
+    labelText: 'Result',
   },
   final_answer: {
-    bg: 'rgba(30,0,60,0.55)', border: 'rgba(180,130,255,0.5)',
-    label: '#d8b4fe', text: '#fff', labelText: 'Final Answer',
+    bg: 'rgba(160, 120, 255, 0.08)', 
+    border: 'rgba(160, 120, 255, 0.3)',
+    label: '#c4b5fd', 
+    text: 'var(--text-primary)', 
+    labelText: 'Final Answer',
   },
   max_steps_reached: {
-    bg: 'rgba(60,30,0,0.5)', border: 'rgba(255,180,50,0.4)',
-    label: '#fcd34d', text: '#fef3c7', labelText: 'Max Steps Reached',
+    bg: 'rgba(255, 180, 50, 0.08)', 
+    border: 'rgba(255, 180, 50, 0.25)',
+    label: '#ffc94d', 
+    text: 'var(--text-primary)', 
+    labelText: 'Max Steps Reached',
   },
   error: {
-    bg: 'rgba(80,20,20,0.55)', border: 'rgba(255,100,100,0.45)',
-    label: '#fca5a5', text: '#fee2e2', labelText: 'Error',
+    bg: 'rgba(255, 107, 107, 0.08)', 
+    border: 'rgba(255, 107, 107, 0.25)',
+    label: '#ff6b6b', 
+    text: '#fecaca', 
+    labelText: 'Error',
   },
 }
 
@@ -39,11 +57,30 @@ export function EventCard({ event, onApprovalResolved }) {
     (event.result != null ? String(event.result) : '')
 
   return (
-    <div style={{ background: s.bg, border: `1px solid ${s.border}`, borderRadius: 12, padding: '12px 16px', backdropFilter: 'blur(10px)' }}>
-      <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', color: s.label, marginBottom: 6 }}>
+    <div style={{ 
+      background: s.bg, 
+      border: `1px solid ${s.border}`, 
+      borderRadius: 'var(--radius-md)', 
+      padding: '14px 18px',
+      boxShadow: 'var(--shadow-soft)',
+      animation: 'slide-up 0.2s ease',
+    }}>
+      <div style={{ 
+        fontSize: 10, 
+        fontWeight: 700, 
+        textTransform: 'uppercase', 
+        letterSpacing: '0.8px', 
+        color: s.label, 
+        marginBottom: 8 
+      }}>
         {s.labelText}{event.tool ? ` — ${event.tool}` : ''}
       </div>
-      <div style={{ fontSize: 14, lineHeight: 1.7, color: s.text, whiteSpace: 'pre-wrap' }}>
+      <div style={{ 
+        fontSize: 14, 
+        lineHeight: 1.7, 
+        color: s.text, 
+        whiteSpace: 'pre-wrap' 
+      }}>
         {body}
       </div>
     </div>
@@ -54,13 +91,36 @@ export function ThinkingCard() {
   return (
     <>
       <style>{`
-        @keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-5px)} }
-        .dot { width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.4);display:inline-block;margin-right:3px;animation:bounce 1.2s infinite; }
-        .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+        @keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-4px)} }
+        .thinking-dot { 
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: var(--brand-primary);
+          display: inline-block;
+          margin-right: 4px;
+          animation: bounce 1.2s infinite;
+          opacity: 0.7;
+        }
+        .thinking-dot:nth-child(2){animation-delay:.2s}
+        .thinking-dot:nth-child(3){animation-delay:.4s}
       `}</style>
-      <div style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 10, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
-        <div><span className="dot"/><span className="dot"/><span className="dot"/></div>
-        <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)' }}>Agent is thinking...</span>
+      <div style={{ 
+        background: 'var(--surface-sunken)', 
+        border: '1px solid var(--border-subtle)', 
+        borderRadius: 'var(--radius-md)', 
+        padding: '14px 18px', 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: 12,
+        boxShadow: 'var(--shadow-pressed)',
+      }}>
+        <div>
+          <span className="thinking-dot"/>
+          <span className="thinking-dot"/>
+          <span className="thinking-dot"/>
+        </div>
+        <span style={{ fontSize: 13, color: 'var(--text-tertiary)' }}>Agent is thinking...</span>
       </div>
     </>
   )
